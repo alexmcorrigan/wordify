@@ -1,5 +1,8 @@
 package com.mcorrigal.wordify;
 
+import static com.mcorrigal.wordify.Dictionary.AND;
+import static com.mcorrigal.wordify.Dictionary.COMMA;
+
 import java.util.List;
 
 public class TranslationComposer {
@@ -21,25 +24,34 @@ public class TranslationComposer {
 		while (numberGroups.hasNext()) {
 			NumberGroup currentNumberGroup = numberGroups.next();
 			numberGroups.remove();
-			
-			if (currentNumberGroup.isNotZero()) {
-				
-				if (number > 100 && numberGroups.size() == 0 && currentNumberGroup.isLessThan(100)) {
-					appendToComposition(" and "); 
-					appendToComposition(currentNumberGroup.getNumberGroupTranslation());
-				} else {
-					appendToComposition(currentNumberGroup.getNumberGroupTranslation());
-					appendToComposition(currentNumberGroup.getNumberGroupAppendage());
-					
-					if (numberGroups.size() > 0) {
-						if (nextNumberGroup().isNotZero() && (nextNumberGroup().isGreaterThan(99) || numberGroups.size() > 1)) {
-							appendToComposition(", ");
-						}
-					}
-				}
-			}
+			if (currentNumberGroup.isNotZero()) appendTranslationForNumberGroup(number, currentNumberGroup);
 		}
 		return composition.toString();
+	}
+
+	private void appendTranslationForNumberGroup(int number, NumberGroup currentNumberGroup) {
+		if (shouldPrependAnd(number, currentNumberGroup)) {
+			appendNumberGroupTranslationWithAndPrependage(currentNumberGroup); 
+		} else {
+			appendNumberGroupTranslationWithAppendage(currentNumberGroup);
+			if (shouldAppendComma()) appendToComposition(COMMA);
+		}
+	}
+
+	private boolean shouldPrependAnd(int number, NumberGroup currentNumberGroup) {
+		return number > 100 && numberGroups.size() == 0 && currentNumberGroup.isLessThan(100);
+	}
+
+	private boolean shouldAppendComma() {
+		return numberGroups.size() > 0 && nextNumberGroup().isNotZero() && (nextNumberGroup().isGreaterThan(99) || numberGroups.size() > 1);
+	}
+
+	private void appendNumberGroupTranslationWithAppendage(NumberGroup currentNumberGroup) {
+		composition.append(currentNumberGroup.getNumberGroupTranslation() + currentNumberGroup.getNumberGroupAppendage());
+	}
+
+	private void appendNumberGroupTranslationWithAndPrependage(NumberGroup currentNumberGroup) {
+		composition.append(AND + currentNumberGroup.getNumberGroupTranslation());
 	}
 
 	private NumberGroup nextNumberGroup() {

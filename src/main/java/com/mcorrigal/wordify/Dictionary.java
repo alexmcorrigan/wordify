@@ -4,10 +4,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Dictionary {
+	
+	private static final String TEEN = "teen";
+	private static final String TY = "ty";
+	private static final String HUNDRED = " hundred";
+	public static final String AND = " and ";
+	private static final String SPACE = " ";
+	private static final String EMPTY = "";
+	public static final String COMMA = ", ";
 
 	private static final Map<Integer, String> INTEGER_DICTIONARY = new HashMap<Integer, String>();
 	private static final Map<Integer, String> SPECIAL_INTEGER_PREPEND_DICTIONARY = new HashMap<Integer, String>();
 	private static final Map<Integer, String> NUMBER_GROUP_APPENDAGE_DICTIONARY = new HashMap<Integer, String>();
+	private static final Map<Integer, String> APPENDAGE_FOR_FACTOR = new HashMap<Integer, String>();
+	private static final Map<Integer, String> ADDITIONAL_APPENDAGE_FOR_FACTOR = new HashMap<Integer, String>();
 	
 	static {
 		INTEGER_DICTIONARY.put(0, "zero");
@@ -30,10 +40,17 @@ public class Dictionary {
 		SPECIAL_INTEGER_PREPEND_DICTIONARY.put(5, "fif");
 		SPECIAL_INTEGER_PREPEND_DICTIONARY.put(8, "eigh");
 		
-		NUMBER_GROUP_APPENDAGE_DICTIONARY.put(1, "");
+		NUMBER_GROUP_APPENDAGE_DICTIONARY.put(1, EMPTY);
 		NUMBER_GROUP_APPENDAGE_DICTIONARY.put(2, " thousand");
 		NUMBER_GROUP_APPENDAGE_DICTIONARY.put(3, " million");
 		NUMBER_GROUP_APPENDAGE_DICTIONARY.put(4, " billion");
+		
+		APPENDAGE_FOR_FACTOR.put(0, TEEN);
+		APPENDAGE_FOR_FACTOR.put(10, TY);
+		APPENDAGE_FOR_FACTOR.put(100, HUNDRED);
+		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(0, EMPTY);
+		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(10, SPACE);
+		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(100, AND);
 	}
 	
 	public static boolean integerTranslationExists(int value) {
@@ -53,7 +70,15 @@ public class Dictionary {
 	}
 	
 	public static String lookUpNumberGroupAppendage(int value) {
-		return NUMBER_GROUP_APPENDAGE_DICTIONARY.containsKey(value) ? NUMBER_GROUP_APPENDAGE_DICTIONARY.get(value) : "";
+		return NUMBER_GROUP_APPENDAGE_DICTIONARY.containsKey(value) ? NUMBER_GROUP_APPENDAGE_DICTIONARY.get(value) : EMPTY;
+	}
+	
+	public static String lookUpAppedageForFactor(int factor) {
+		return APPENDAGE_FOR_FACTOR.get(factor);
+	}
+	
+	public static String lookUpAdditionalAppedageForFactor(int factor) {
+		return ADDITIONAL_APPENDAGE_FOR_FACTOR.get(factor);
 	}
 	
 }

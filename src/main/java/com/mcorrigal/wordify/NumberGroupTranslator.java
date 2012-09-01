@@ -1,32 +1,14 @@
 package com.mcorrigal.wordify;
 
 import static com.mcorrigal.wordify.Dictionary.integerTranslationExists;
+import static com.mcorrigal.wordify.Dictionary.lookUpAdditionalAppedageForFactor;
+import static com.mcorrigal.wordify.Dictionary.lookUpAppedageForFactor;
 import static com.mcorrigal.wordify.Dictionary.lookUpIntegerTranslation;
 import static com.mcorrigal.wordify.Dictionary.lookUpNumberGroupAppendage;
 import static com.mcorrigal.wordify.Dictionary.lookUpSpecialPrependTranslation;
 import static com.mcorrigal.wordify.Dictionary.specialPrependTranslationExists;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class NumberGroupTranslator {
-
-	private static final String TEEN = "teen";
-	private static final String TY = "ty";
-	private static final String HUNDRED = " hundred";
-	private static final String AND = " and ";
-	private static final String SPACE = " ";
-	
-	private static final Map<Integer, String> APPENDAGE_FOR_FACTOR = new HashMap<Integer, String>();
-	private static final Map<Integer, String> ADDITIONAL_APPENDAGE_FOR_FACTOR = new HashMap<Integer, String>();
-	static {
-		APPENDAGE_FOR_FACTOR.put(0, TEEN);
-		APPENDAGE_FOR_FACTOR.put(10, TY);
-		APPENDAGE_FOR_FACTOR.put(100, HUNDRED);
-		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(0, "");
-		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(10, SPACE);
-		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(100, AND);
-	}
 	
 	public NumberGroup translate(int numberGroup, int totalNumberGroups, int indexOfThisNumberGroup) {
 		String numberGroupTranslation = getTranslation(numberGroup);
@@ -47,7 +29,6 @@ public class NumberGroupTranslator {
 	}
 	
 	private String createTranslationForNumberGreaterThanNine(int number) {
-		
 		boolean isTeen = number > 9 && number < 20; 
 		boolean lessThanHundred = number < 100;
 		int mostSignificantPart;
@@ -61,8 +42,8 @@ public class NumberGroupTranslator {
 			mostSignificantPart = getMostSignificantPart(number, 0);
 		}
 		
-		String appendage = APPENDAGE_FOR_FACTOR.get(factor);
-		String additionalAppendage = ADDITIONAL_APPENDAGE_FOR_FACTOR.get(factor);
+		String appendage = lookUpAppedageForFactor(factor);
+		String additionalAppendage = lookUpAdditionalAppedageForFactor(factor);
 		int leastSignificantPart = factor == 0 ? 0 : getLeastSignificantPart(number, mostSignificantPart, factor);
 		return buildFullTranslation(lessThanHundred, mostSignificantPart, leastSignificantPart, appendage, additionalAppendage, factor);
 	}
