@@ -2,6 +2,7 @@ package com.mcorrigal.wordify;
 
 import static com.mcorrigal.wordify.Dictionary.integerTranslationExists;
 import static com.mcorrigal.wordify.Dictionary.lookUpIntegerTranslation;
+import static com.mcorrigal.wordify.Dictionary.lookUpNumberGroupAppendage;
 import static com.mcorrigal.wordify.Dictionary.lookUpSpecialPrependTranslation;
 import static com.mcorrigal.wordify.Dictionary.specialPrependTranslationExists;
 
@@ -27,11 +28,21 @@ public class NumberGroupTranslator {
 		ADDITIONAL_APPENDAGE_FOR_FACTOR.put(100, AND);
 	}
 	
-	public String translate(int number) {
-		if (integerTranslationExists(number)) {
-			return lookUpIntegerTranslation(number);
+	public NumberGroup translate(int numberGroup, int totalNumberGroups, int indexOfThisNumberGroup) {
+		String numberGroupTranslation = getTranslation(numberGroup);
+		String numberGroupAppendage = getNumberGroupAppendage(totalNumberGroups, indexOfThisNumberGroup);
+		return new NumberGroup(numberGroup, numberGroupTranslation, numberGroupAppendage);
+	}
+	
+	private String getNumberGroupAppendage(int totalNumberGroups, int indexOfThisNumberGroup) {
+		return lookUpNumberGroupAppendage(totalNumberGroups - indexOfThisNumberGroup);
+	}
+
+	private String getTranslation(int numberGroup) {
+		if (integerTranslationExists(numberGroup)) {
+			return lookUpIntegerTranslation(numberGroup);
 		} else {
-			return createTranslationForNumberGreaterThanNine(number);
+			return createTranslationForNumberGreaterThanNine(numberGroup);
 		}
 	}
 	
@@ -65,7 +76,7 @@ public class NumberGroupTranslator {
 			int factor) {
 		StringBuilder translationBulder = new StringBuilder();
 		translationBulder.append(buildMostSignificantPartTranslation(mostSignificantPart, lessThanHundred, appendage));
-		if (leastSignificantPart != 0) translationBulder.append(additionalAppendage + translate(leastSignificantPart));
+		if (leastSignificantPart != 0) translationBulder.append(additionalAppendage + getTranslation(leastSignificantPart));
 		return translationBulder.toString();
 	}
 

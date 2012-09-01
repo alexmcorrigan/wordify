@@ -1,7 +1,5 @@
 package com.mcorrigal.wordify;
 
-import static com.mcorrigal.wordify.Dictionary.lookUpNumberGroupAppendage;
-
 import java.util.List;
 
 public class TranslationComposer {
@@ -9,61 +7,47 @@ public class TranslationComposer {
 	private NumberSplitter numberSplitter = new NumberSplitter();
 	private NumberGroupTranslator numberGroupTranslator = new NumberGroupTranslator();
 	private StringBuilder composition;
-	private List<Integer> numberGroups;
+	private NumberGroupCollection numberGroups;
 	
 	public String composeTranslationFor(int number) {
 		composition = new StringBuilder();
-		numberGroups = numberSplitter.splitUp(number);
+		numberGroups = new NumberGroupCollection();
 		
-		int remainingNumberGroups = numberGroups.size();
+		List<Integer> numberGroupValues = numberSplitter.splitUp(number);
+		for (int i = 0; i < numberGroupValues.size(); i++) {
+			numberGroups.add(numberGroupTranslator.translate(numberGroupValues.get(i), numberGroupValues.size(), i));
+		}
 		
-		if (number < 0) composition.append("minus ");
-		
-		for (int i = 0; i < numberGroups.size(); i++) {
+		while (numberGroups.hasNext()) {
+			NumberGroup currentNumberGroup = numberGroups.next();
+			numberGroups.remove();
 			
-			int currentNumberGroup = numberGroups.get(i);
-			String appendage = getAppendageForNumberGroup(remainingNumberGroups);
-			remainingNumberGroups --;
-			
-			if (groupDoesNotEquateToZero(currentNumberGroup)) {
+			if (currentNumberGroup.isNotZero()) {
 				
-				if (number > 100 && remainingNumberGroups == 0 && currentNumberGroup < 100) {
-					appendToComposition(" and " + translateNumberGroup(currentNumberGroup));
-					
+				if (number > 100 && numberGroups.size() == 0 && currentNumberGroup.isLessThan(100)) {
+					appendToComposition(" and "); 
+					appendToComposition(currentNumberGroup.getNumberGroupTranslation());
 				} else {
-					appendToComposition(translateNumberGroup(currentNumberGroup));
-					appendToComposition(appendage);
+					appendToComposition(currentNumberGroup.getNumberGroupTranslation());
+					appendToComposition(currentNumberGroup.getNumberGroupAppendage());
 					
-					if (remainingNumberGroups > 0) {
-						if (nextNumberGroup(i) > 99 || (groupDoesNotEquateToZero(nextNumberGroup(i)) && remainingNumberGroups > 1)) {
+					if (numberGroups.size() > 0) {
+						if (nextNumberGroup().isNotZero() && (nextNumberGroup().isGreaterThan(99) || numberGroups.size() > 1)) {
 							appendToComposition(", ");
 						}
 					}
 				}
 			}
 		}
-		
 		return composition.toString();
 	}
 
-	private Integer nextNumberGroup(int currentIndex) {
-		return numberGroups.get(currentIndex + 1);
+	private NumberGroup nextNumberGroup() {
+		return numberGroups.next();
 	}
 	
 	private void appendToComposition(String text) {
 		composition.append(text);
-	}
-	
-	private String translateNumberGroup(int numberGroup) {
-		return numberGroupTranslator.translate(numberGroup);
-	}
-	
-	private String getAppendageForNumberGroup(int numberOfGroups) {
-		return lookUpNumberGroupAppendage(numberOfGroups);
-	}
-	
-	private boolean groupDoesNotEquateToZero(int numberGroup) {
-		return numberGroup == 0 ? false : true;
 	}
 
 }
