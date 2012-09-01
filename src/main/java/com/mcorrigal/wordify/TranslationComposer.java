@@ -11,27 +11,39 @@ public class TranslationComposer {
 	private NumberSplitter numberSplitter = new NumberSplitter();
 	private NumberGroupTranslator numberGroupTranslator = new NumberGroupTranslator();
 	private StringBuilder composition;
+	private List<Integer> numberGroupValues;
 	private NumberGroupCollection numberGroups;
 	
 	public String composeTranslationFor(int number) {
 		composition = new StringBuilder();
+		number = handleIfNegative(number);
+		numberGroupValues = numberSplitter.splitUp(number);
 		numberGroups = new NumberGroupCollection();
-		
-		if (number < 0) {
-			composition.append(MINUS);
-			number = Math.abs(number);
-		}
-		
-		List<Integer> numberGroupValues = numberSplitter.splitUp(number);
-		for (int i = 0; i < numberGroupValues.size(); i++) {
-			numberGroups.add(numberGroupTranslator.translate(numberGroupValues.get(i), numberGroupValues.size(), i));
-		}
+		translateEachNumberGroupValue();
+		performComposition(number);
+		return composition.toString();
+	}
+
+	private void performComposition(int number) {
 		while (numberGroups.hasNext()) {
 			NumberGroup currentNumberGroup = numberGroups.next();
 			numberGroups.remove();
 			if (currentNumberGroup.isNotZero()) appendTranslationForNumberGroup(number, currentNumberGroup);
 		}
-		return composition.toString();
+	}
+
+	private void translateEachNumberGroupValue() {
+		for (int i = 0; i < numberGroupValues.size(); i++) {
+			numberGroups.add(numberGroupTranslator.translate(numberGroupValues.get(i), numberGroupValues.size(), i));
+		}
+	}
+
+	private int handleIfNegative(int number) {
+		if (number < 0) {
+			composition.append(MINUS);
+			number = Math.abs(number);
+		}
+		return number;
 	}
 
 	private void appendTranslationForNumberGroup(int number, NumberGroup currentNumberGroup) {
