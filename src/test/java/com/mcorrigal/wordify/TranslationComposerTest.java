@@ -44,6 +44,13 @@ public class TranslationComposerTest {
 		assertCompositionFor(1022033044, "one billion, twenty two million, thirty three thousand and fourty four");
 	}
 	
+	@Test
+	public void negativeNumbers() {
+		assertCompositionFor(-1, "minus one");
+		assertCompositionFor(-1000, "minus one thousand");
+		assertCompositionFor(-1251, "minus one thousand, two hundred and fifty one");
+	}
+	
 	private void assertCompositionFor(int number, String expectedComposition) {
 		assertEquals(expectedComposition, translationComposer.composeTranslationFor(number));
 	}

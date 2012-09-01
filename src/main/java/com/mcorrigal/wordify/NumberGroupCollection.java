@@ -28,7 +28,6 @@ public class NumberGroupCollection implements Iterator<NumberGroup> {
 	@Override
 	public NumberGroup next() {
 		NumberGroup nextNumberGroup = numberGroups.get(0);
-		//numberGroups.remove(0);
 		return nextNumberGroup;
 	}
 

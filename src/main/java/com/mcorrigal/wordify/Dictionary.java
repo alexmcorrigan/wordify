@@ -12,6 +12,7 @@ public class Dictionary {
 	private static final String SPACE = " ";
 	private static final String EMPTY = "";
 	public static final String COMMA = ", ";
+	public static final String MINUS = "minus ";
 
 	private static final Map<Integer, String> INTEGER_DICTIONARY = new HashMap<Integer, String>();
 	private static final Map<Integer, String> SPECIAL_INTEGER_PREPEND_DICTIONARY = new HashMap<Integer, String>();

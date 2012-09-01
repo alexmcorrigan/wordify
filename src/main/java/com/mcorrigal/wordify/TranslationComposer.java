@@ -2,6 +2,7 @@ package com.mcorrigal.wordify;
 
 import static com.mcorrigal.wordify.Dictionary.AND;
 import static com.mcorrigal.wordify.Dictionary.COMMA;
+import static com.mcorrigal.wordify.Dictionary.*;
 
 import java.util.List;
 
@@ -16,11 +17,15 @@ public class TranslationComposer {
 		composition = new StringBuilder();
 		numberGroups = new NumberGroupCollection();
 		
+		if (number < 0) {
+			composition.append(MINUS);
+			number = Math.abs(number);
+		}
+		
 		List<Integer> numberGroupValues = numberSplitter.splitUp(number);
 		for (int i = 0; i < numberGroupValues.size(); i++) {
 			numberGroups.add(numberGroupTranslator.translate(numberGroupValues.get(i), numberGroupValues.size(), i));
 		}
-		
 		while (numberGroups.hasNext()) {
 			NumberGroup currentNumberGroup = numberGroups.next();
 			numberGroups.remove();
